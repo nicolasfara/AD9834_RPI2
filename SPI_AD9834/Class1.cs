@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Diagnostics;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Spi;
@@ -133,7 +134,12 @@ namespace SPI_AD9834
 
         private void WriteReg(ushort reg)
         {
-
+            byte[] regValue = BitConverter.GetBytes(reg);
+            pin_CS0.Write(GpioPinValue.Low);
+            Task.Delay(TimeSpan.FromMilliseconds(0.01)).Wait();
+            SPIAD9834.Write(regValue);
+            Task.Delay(TimeSpan.FromMilliseconds(0.01)).Wait();
+            pin_CS0.Write(GpioPinValue.High);
         }
 
         public void InitSPI_AD9834()
@@ -149,5 +155,18 @@ namespace SPI_AD9834
                 Debug.WriteLine("Fail inizialize AD9834:"+ ex.Message);
             }
         }
+
+        public void SetFrequencyWord(byte reg, UInt32 frequency)
+        {
+            WriteReg((ushort)((reg == 1 ? REG_FREQ1 : REG_FREQ0) | (frequency & 0x3FFF)));
+            WriteReg((ushort)((reg == 1 ? REG_FREQ1 : REG_FREQ0 | (frequency >> 14) & 0x3FFF)));
+        }
+
+        public void SetPhaseWord(byte reg, UInt32 phase)
+        {
+            WriteReg((ushort)((reg == 1 ? REG_PHASE1 : REG_PHASE0) | (phase & 0x0FFF)));
+        }
     }
+
+    
 }
