@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPI_Demo", "SPI_Demo\SPI_Demo.csproj", "{C8B03B47-06DC-4DE3-8C83-1B98A5D4A365}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AD9834_RPI2", "SPI_Demo\AD9834_RPI2.csproj", "{C8B03B47-06DC-4DE3-8C83-1B98A5D4A365}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPI_AD9834", "SPI_AD9834\SPI_AD9834.csproj", "{5CA1D6D6-48CE-4345-BA4F-A44DCA3CCDB4}"
 EndProject

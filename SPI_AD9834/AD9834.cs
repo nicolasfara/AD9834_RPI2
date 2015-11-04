@@ -11,7 +11,9 @@ using Windows.Devices.Gpio;
 
 namespace SPI_AD9834
 {
-    public class Class1
+    
+
+    public class AD9834
     {
         private const ushort REG_FREQ1 = 0x8000;
         private const ushort REG_FREQ0 = 0x4000;
@@ -29,6 +31,7 @@ namespace SPI_AD9834
         private const ushort REG_SIGNPIB = 0x0010;
         private const ushort REG_DIV2 = 0x0008;
         private const ushort REG_MODE = 0x0002;
+        private const ushort REG_MODE_NEG = 0xFFFD;
         private const ushort SPI_CHIP_SELECT_LINE = 0x00;
         private const int CS0 = 15;
         private const int CS1 = 13;
@@ -38,8 +41,23 @@ namespace SPI_AD9834
         private const int PSELECT = 31;
         private const int RESET = 33;
         private const int SLEEP = 35;
+        private UInt16 m_reg = 0;
 
         private const ushort SIGN_OUTPUT_MASK = (REG_OPBITEN | REG_SIGNPIB | REG_DIV2 | REG_MODE);
+
+        public enum SignOutput
+        {
+            SIGN_OUTPUT_NONE = 0x0000,
+            SIGN_OUTPUT_MSB = 0x0028,
+            SIGN_OUTPUT_MSB_2 = 0x0020,
+            SIGN_OUTPUT_COMPARATOR = 0x0038,
+        };
+
+        public enum OutputMode
+        {
+            OUTPUT_MODE_SINE = 0x0000,
+            OUTPUT_MODE_TRIANGLE = 0x0002,
+        };
 
         private SpiDevice SPIAD9834;
         private GpioPin pin_CS0;
@@ -149,6 +167,11 @@ namespace SPI_AD9834
                 InitSPI();
                 InitGpio();
                 Debug.WriteLine("Inizialize AD9834");
+                WriteReg(m_reg);
+                SetPhaseWord(0, 0);
+                SetPhaseWord(1, 0);
+                SetFrequencyWord(0, 0);
+                SetFrequencyWord(1, 0);
             }
             catch (Exception ex)
             {
@@ -166,6 +189,44 @@ namespace SPI_AD9834
         {
             WriteReg((ushort)((reg == 1 ? REG_PHASE1 : REG_PHASE0) | (phase & 0x0FFF)));
         }
+
+        public void setSignOutput(SignOutput sign)
+        {
+            m_reg = (ushort)((m_reg & (SIGN_OUTPUT_MASK ^ 0xFFFF)) | (ushort)sign);
+            WriteReg(m_reg);
+        }
+
+        public void setOutputMode(OutputMode mode)
+        {
+            if (mode ==  OutputMode.OUTPUT_MODE_TRIANGLE) {
+                m_reg =(ushort)((m_reg & ~SIGN_OUTPUT_MASK) | (ushort)mode);
+            } else {
+                m_reg &= (REG_MODE ^ 0xFFFF);
+            }
+            WriteReg(m_reg);            
+        }
+
+        public void resetAD9834(Boolean reset)
+        {
+            if (reset)
+            {
+                m_reg |= REG_RESET;
+            }
+            else
+            {
+                m_reg &= (REG_RESET ^ 0xFFFF);
+            }
+
+            WriteReg(m_reg);
+        }
+
+        public void AD9834_begin()
+        {
+            resetAD9834(true);
+            InitSPI_AD9834();
+            resetAD9834(false);
+        }
+
     }
 
     

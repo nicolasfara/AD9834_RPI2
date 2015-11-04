@@ -113,7 +113,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="AD9834.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Properties\SPI_AD9834.rd.xml" />
   </ItemGroup>

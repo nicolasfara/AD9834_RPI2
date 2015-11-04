@@ -25,7 +25,7 @@ namespace SPI_Demo
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        SPI_AD9834.Class1 AD9854 = new SPI_AD9834.Class1();
+        SPI_AD9834.AD9834 AD9854 = new SPI_AD9834.AD9834();
 
 
         public MainPage()
