@@ -273,19 +273,20 @@ namespace SPI_AD9834
 
     public class DAC
     {
-        public void DACwriteOffset(int offset)
+        AD9834 SPI = new AD9834();
+
+        public void DACwriteOffset(Double offset)
         {
             ushort resolution = 65535;
             ushort word = (ushort)((resolution / 10) * (offset + 5));           
-            AD9834 SPI = new AD9834();
             SPI.WriteSPI(word);
         }
 
-        public void DACwriteAmplitude(int amplitude)
+        public void DACwriteAmplitude(Double amplitude)
         {
-            ushort resolution = 65535;
-            
-
+            ushort resolution = 15728;
+            ushort word = (ushort)((amplitude * resolution) / 12.7058824);
+            SPI.WriteSPI(word);
         }
     }
 
