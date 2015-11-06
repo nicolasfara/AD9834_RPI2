@@ -11,7 +11,6 @@ using Windows.Devices.Gpio;
 
 namespace SPI_AD9834
 {
-    
 
     public class AD9834
     {
@@ -33,14 +32,13 @@ namespace SPI_AD9834
         private const ushort REG_MODE = 0x0002;
         private const ushort REG_MODE_NEG = 0xFFFD;
         private const ushort SPI_CHIP_SELECT_LINE = 0x00;
-        private const int CS0 = 15;
-        private const int CS1 = 13;
-        private const int CS2 = 13;
-        private const int CS3 = 13;
-        private const int FSELECT = 29;
-        private const int PSELECT = 31;
-        private const int RESET = 33;
-        private const int SLEEP = 35;
+        private const int CS0 = 26;
+        private const int CS1 = 22;
+        private const int CS2 = 27;
+        private const int FSELECT = 5;
+        private const int PSELECT = 6;
+        private const int RESET = 13;
+        private const int SLEEP = 19;
         private UInt16 m_reg = 0;
 
         private const ushort SIGN_OUTPUT_MASK = (REG_OPBITEN | REG_SIGNPIB | REG_DIV2 | REG_MODE);
@@ -59,17 +57,26 @@ namespace SPI_AD9834
             OUTPUT_MODE_TRIANGLE = 0x0002,
         };
 
+        public enum EnableChip
+        {
+            AD9834,
+            Offset,
+            Amplitude,
+            OffAll,
+        };
+
         private SpiDevice SPIAD9834;
         private GpioPin pin_CS0;
         private GpioPin pin_CS1;
         private GpioPin pin_CS2;
-        private GpioPin pin_CS3;
         private GpioPin pin_FSELECT;
         private GpioPin pin_PSELECT;
         private GpioPin pin_RESET;
-        private GpioPin pin_SLEEP;
+        //private GpioPin pin_SLEEP;
 
-        private async void InitSPI()
+        private GpioController gpio;
+
+        private async Task InitSPI()
         {
             try
             {
@@ -79,7 +86,7 @@ namespace SPI_AD9834
                                                                                  * to set the clock polarity and phase to: CPOL = 1, CPHA = 1         
                                                                                  */
 
-                string aqs = SpiDevice.GetDeviceSelector();                     /* Get a selector string that will return all SPI controllers on the system */
+                string aqs = SpiDevice.GetDeviceSelector("SPI0");                     /* Get a selector string that will return all SPI controllers on the system */
                 var dis = await DeviceInformation.FindAllAsync(aqs);            /* Find the SPI bus controller devices with our selector string             */
                 SPIAD9834 = await SpiDevice.FromIdAsync(dis[0].Id, settings);    /* Create an SpiDevice with our bus controller and SPI settings             */
                 if (SPIAD9834 == null)
@@ -87,6 +94,8 @@ namespace SPI_AD9834
                     Debug.WriteLine("SPI {0} inizialized not completed. SPI is busy", dis[0].Id);
                     return;
                 }
+
+                Debug.WriteLine("SPI inizialized");
             }
             catch (Exception ex)
             {
@@ -97,55 +106,43 @@ namespace SPI_AD9834
 
         private void InitGpio()
         {
-            var gpio = GpioController.GetDefault();
+            gpio = GpioController.GetDefault();
 
             // Show an error if there is no GPIO controller
             if (gpio == null)
             {
-                pin_CS0 = null;
-                pin_CS1 = null;
-                pin_CS2 = null;
-                pin_CS3 = null;
-                pin_FSELECT = null;
-                pin_PSELECT = null;
-                pin_RESET = null;
-                pin_SLEEP = null;
-                Debug.WriteLine("GPIO inizialization fail.");
-                return;
+                throw new Exception("GPIO do not exist");               
             }
 
             pin_CS0 = gpio.OpenPin(CS0);
+            pin_CS0.Write(GpioPinValue.High);
+            pin_CS0.SetDriveMode(GpioPinDriveMode.Output);
             pin_CS1 = gpio.OpenPin(CS1);
+            pin_CS1.Write(GpioPinValue.High);
+            pin_CS1.SetDriveMode(GpioPinDriveMode.Output);
             pin_CS2 = gpio.OpenPin(CS2);
-            pin_CS3 = gpio.OpenPin(CS3);
+            pin_CS2.Write(GpioPinValue.High);
+            pin_CS2.SetDriveMode(GpioPinDriveMode.Output);
             pin_FSELECT = gpio.OpenPin(FSELECT);
+            pin_FSELECT.Write(GpioPinValue.Low);
+            pin_FSELECT.SetDriveMode(GpioPinDriveMode.Output);
             pin_PSELECT = gpio.OpenPin(PSELECT);
+            pin_PSELECT.Write(GpioPinValue.Low);
+            pin_PSELECT.SetDriveMode(GpioPinDriveMode.Output);
             pin_RESET = gpio.OpenPin(RESET);
-            pin_SLEEP = gpio.OpenPin(SLEEP);
+            pin_RESET.Write(GpioPinValue.Low);
+            pin_RESET.SetDriveMode(GpioPinDriveMode.Output);
+            /*pin_SLEEP = gpio.OpenPin(SLEEP);
+            pin_SLEEP.Write(GpioPinValue.Low);
+            pin_SLEEP.SetDriveMode(GpioPinDriveMode.Output);*/
+
 
             // Show an error if the pin wasn't initialized properly
-            if (pin_CS0 == null && pin_CS1 == null)
+            if (pin_CS0 == null && pin_CS1 == null && pin_CS2 == null)
             {
                 Debug.WriteLine("Pin not open");
                 return;
             }
-
-            pin_CS0.Write(GpioPinValue.High);
-            pin_CS1.Write(GpioPinValue.High);
-            pin_CS2.Write(GpioPinValue.High);
-            pin_CS3.Write(GpioPinValue.High);
-            pin_FSELECT.Write(GpioPinValue.Low);
-            pin_PSELECT.Write(GpioPinValue.Low);
-            pin_RESET.Write(GpioPinValue.High);
-            pin_SLEEP.Write(GpioPinValue.High);
-            pin_CS0.SetDriveMode(GpioPinDriveMode.Output);
-            pin_CS1.SetDriveMode(GpioPinDriveMode.Output);
-            pin_CS2.SetDriveMode(GpioPinDriveMode.Output);
-            pin_CS3.SetDriveMode(GpioPinDriveMode.Output);
-            pin_FSELECT.SetDriveMode(GpioPinDriveMode.Output);
-            pin_PSELECT.SetDriveMode(GpioPinDriveMode.Output);
-            pin_RESET.SetDriveMode(GpioPinDriveMode.Output);
-            pin_SLEEP.SetDriveMode(GpioPinDriveMode.Output);
 
             Debug.WriteLine("Gpio initialize");
         }
@@ -153,20 +150,21 @@ namespace SPI_AD9834
         private void WriteReg(ushort reg)
         {
             byte[] regValue = BitConverter.GetBytes(reg);
-            pin_CS0.Write(GpioPinValue.Low);
+            EnableCs(EnableChip.AD9834);
             Task.Delay(TimeSpan.FromMilliseconds(0.01)).Wait();
             SPIAD9834.Write(regValue);
             Task.Delay(TimeSpan.FromMilliseconds(0.01)).Wait();
-            pin_CS0.Write(GpioPinValue.High);
+            EnableCs(EnableChip.OffAll);
+            Debug.WriteLine("Write SPI complete");
         }
 
-        public void InitSPI_AD9834()
+        public async void InitSPI_AD9834()
         {
             try
             {
-                InitSPI();
+                await InitSPI();
                 InitGpio();
-                Debug.WriteLine("Inizialize AD9834");
+                Debug.WriteLine("Inizialized AD9834 correctly");               
                 WriteReg(m_reg);
                 SetPhaseWord(0, 0);
                 SetPhaseWord(1, 0);
@@ -175,7 +173,7 @@ namespace SPI_AD9834
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Fail inizialize AD9834:"+ ex.Message);
+                Debug.WriteLine("Fail inizialize AD9834: "+ ex.Message);
             }
         }
 
@@ -227,7 +225,68 @@ namespace SPI_AD9834
             resetAD9834(false);
         }
 
+        public void EnableCs(EnableChip cs)
+        {
+            switch(cs)
+            {
+                case EnableChip.AD9834:
+                    pin_CS0.Write(GpioPinValue.Low);
+                    pin_CS1.Write(GpioPinValue.High);
+                    pin_CS2.Write(GpioPinValue.High);
+                    Debug.WriteLine("AD9834 Enable");
+                    break;
+
+                case EnableChip.Offset:
+                    pin_CS0.Write(GpioPinValue.High);
+                    pin_CS1.Write(GpioPinValue.Low);
+                    pin_CS2.Write(GpioPinValue.High);
+                    Debug.WriteLine("Offset Enable");
+                    break;
+
+                case EnableChip.Amplitude:
+                    pin_CS0.Write(GpioPinValue.High);
+                    pin_CS1.Write(GpioPinValue.High);
+                    pin_CS2.Write(GpioPinValue.Low);
+                    Debug.WriteLine("Amplitude Enable");
+                    break;
+
+                case EnableChip.OffAll:
+                    pin_CS0.Write(GpioPinValue.High);
+                    pin_CS1.Write(GpioPinValue.High);
+                    pin_CS2.Write(GpioPinValue.High);
+                    Debug.WriteLine("All CS off");
+                    break;
+
+                default:
+                    Debug.Write("Error input function");
+                    return;
+            }
+        }
+
+        public void WriteSPI(ushort data)
+        {
+            byte[] word = BitConverter.GetBytes(data);
+            SPIAD9834.Write(word);
+        }
+
     }
 
-    
+    public class DAC
+    {
+        public void DACwriteOffset(int offset)
+        {
+            ushort resolution = 65535;
+            ushort word = (ushort)((resolution / 10) * (offset + 5));           
+            AD9834 SPI = new AD9834();
+            SPI.WriteSPI(word);
+        }
+
+        public void DACwriteAmplitude(int amplitude)
+        {
+            ushort resolution = 65535;
+            
+
+        }
+    }
+
 }

@@ -31,7 +31,7 @@ namespace SPI_Demo
         public MainPage()
         {
             this.InitializeComponent();
-            AD9854.InitSPI_AD9834();
+            AD9854.InitSPI_AD9834();            
         }        
     }
 }
