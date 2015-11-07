@@ -25,13 +25,14 @@ namespace SPI_Demo
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        SPI_AD9834.AD9834 AD9854 = new SPI_AD9834.AD9834();
-
+        SPI_AD9834.AD9834 AD9834 = new SPI_AD9834.AD9834();
+        SPI_AD9834.DAC dac = new SPI_AD9834.DAC();
 
         public MainPage()
         {
             this.InitializeComponent();
-            AD9854.InitSPI_AD9834();            
+            AD9834.InitSPI_AD9834();
+            dac.DACinizialize();       
         }        
     }
 }

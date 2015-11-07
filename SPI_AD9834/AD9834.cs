@@ -275,19 +275,28 @@ namespace SPI_AD9834
     {
         AD9834 SPI = new AD9834();
 
-        public void DACwriteOffset(Double offset)
+        public void DACwriteOffset(double offset)
         {
-            ushort resolution = 65535;
-            ushort word = (ushort)((resolution / 10) * (offset + 5));           
-            SPI.WriteSPI(word);
+            ushort resolution = 65535;  //Resolution bit of AD5660 2^16
+            ushort word = (ushort)((resolution / 10) * (offset + 5));   //formula to calculate a digital value for AD5660. Output +/-5V           
+            SPI.WriteSPI(word); //write over SPI the digital data
         }
 
-        public void DACwriteAmplitude(Double amplitude)
+        public void DACwriteAmplitude(double amplitude)
         {
-            ushort resolution = 15728;
-            ushort word = (ushort)((amplitude * resolution) / 12.7058824);
-            SPI.WriteSPI(word);
+            ushort resolution = 15728;  //correspond (in digital value) to 1.20V, max analog value for AD5660 (vref AD9834)
+            ushort word = (ushort)(((1.20 - (amplitude / 10)) * resolution) / 1.20);  //formula to calculate the digital value for amplitude
+            SPI.WriteSPI(word); //write over SPI the data
         }
+
+        public void DACinizialize()
+        {
+            DACwriteOffset(0);
+            DACwriteAmplitude(1);
+            Debug.Write("DAC inizialize");
+        }
+
+
     }
 
 }
