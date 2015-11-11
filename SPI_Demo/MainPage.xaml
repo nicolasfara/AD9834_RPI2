@@ -25,7 +25,7 @@
             <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="FrequencyTextBox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" TextWrapping="Wrap" Text="Frequency" FontSize="32" Background="{x:Null}" TextChanged="FrequencyTextBox_TextChanged" KeyDown="FrequencyTextBox_KeyDown"/>
+        <TextBox x:Name="FrequencyTextBox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" TextWrapping="Wrap" Text="Frequency" FontSize="32" Background="{x:Null}" TextChanged="FrequencyTextBox_TextChanged"/>
         <TextBox x:Name="AmplitudeTextBox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Amplitude" FontSize="32" Background="{x:Null}" TextChanged="AmplitudeTextBox_TextChanged"/>
         <TextBox x:Name="OffsetTextBox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="1" TextWrapping="Wrap" Text="Offset" FontSize="32" Background="{x:Null}" TextChanged="OffsetTextBox_TextChanged" />
 
