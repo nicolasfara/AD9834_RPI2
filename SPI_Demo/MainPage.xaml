@@ -8,7 +8,43 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock x:Name="Title" HorizontalAlignment="Center" TextWrapping="Wrap" Text="AD9834 Interface" VerticalAlignment="Center"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition Width="0.35*"/>
+            <ColumnDefinition Width="0.10*"/>
+            <ColumnDefinition Width="0.65*"/>
+            <ColumnDefinition Width="0.75*"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBox x:Name="FrequencyTextBox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" TextWrapping="Wrap" Text="Frequency" FontSize="32" Background="{x:Null}" TextChanged="FrequencyTextBox_TextChanged" KeyDown="FrequencyTextBox_KeyDown"/>
+        <TextBox x:Name="AmplitudeTextBox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Amplitude" FontSize="32" Background="{x:Null}" TextChanged="AmplitudeTextBox_TextChanged"/>
+        <TextBox x:Name="OffsetTextBox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="1" TextWrapping="Wrap" Text="Offset" FontSize="32" Background="{x:Null}" TextChanged="OffsetTextBox_TextChanged" />
+
+        <ComboBox x:Name="SetFrequencyRange" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top" Height="55" DataContextChanged="SetFrequencyRange_DataContextChanged">
+            <x:String>Hz</x:String>
+            <x:String>KHz</x:String>
+            <x:String>MHz</x:String>
+        </ComboBox>
+        <ComboBox x:Name="SetAmplitudeRange" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Center" Height="55" DataContextChanged="SetAmplitudeRange_DataContextChanged">
+            <x:String>mVp-p</x:String>
+            <x:String>Vp-p</x:String>
+        </ComboBox>
+        <ComboBox x:Name="SetOffsetRange" Grid.Column="3" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Bottom" Height="55" DataContextChanged="SetOffsetRange_DataContextChanged">
+            <x:String>mV</x:String>
+            <x:String>V</x:String>
+        </ComboBox>
+        <RadioButton x:Name="SetSinWave" Grid.Column="5" Content="Sin Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top" Checked="SetSinWave_Checked"/>
+        <RadioButton x:Name="SetTriWave" Grid.Column="5" Content="Triangular Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Center" Checked="SetTriWave_Checked"/>
+        <RadioButton x:Name="SetSqrWave" Grid.Column="5" Content="Square Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Bottom" Checked="SetSqrWave_Checked"/>
+        <TextBlock x:Name="textBlock" Grid.ColumnSpan="8" HorizontalAlignment="Center" TextWrapping="Wrap" Text="MultiGen 1.0" VerticalAlignment="Center" FontSize="60"/>
     </Grid>
 </Page>
