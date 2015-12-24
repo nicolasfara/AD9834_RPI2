@@ -151,9 +151,9 @@ namespace SPI_AD9834
         {
             byte[] regValue = BitConverter.GetBytes(reg);
             EnableCs(EnableChip.AD9834);
-            Task.Delay(TimeSpan.FromMilliseconds(0.01)).Wait();
+            Task.Delay(1).Wait();
             SPIAD9834.Write(regValue);
-            Task.Delay(TimeSpan.FromMilliseconds(0.01)).Wait();
+            Task.Delay(1).Wait();
             EnableCs(EnableChip.OffAll);
             Debug.WriteLine("Write SPI complete");
         }

@@ -42,9 +42,9 @@
             <x:String>mV</x:String>
             <x:String>V</x:String>
         </ComboBox>
-        <RadioButton x:Name="SetSinWave" Grid.Column="5" Content="Sin Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top" Checked="SetSinWave_Checked"/>
-        <RadioButton x:Name="SetTriWave" Grid.Column="5" Content="Triangular Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Center" Checked="SetTriWave_Checked"/>
-        <RadioButton x:Name="SetSqrWave" Grid.Column="5" Content="Square Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Bottom" Checked="SetSqrWave_Checked"/>
+        <RadioButton x:Name="SetSinWave" Grid.Column="5" Content="Sin Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Top" Checked="SetSinWave_Checked" FontSize="24"/>
+        <RadioButton x:Name="SetTriWave" Grid.Column="5" Content="Triangular Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Center" Checked="SetTriWave_Checked" FontSize="18.667"/>
+        <RadioButton x:Name="SetSqrWave" Grid.Column="5" Content="Square Wave" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Bottom" Checked="SetSqrWave_Checked" FontSize="24"/>
         <TextBlock x:Name="textBlock" Grid.ColumnSpan="8" HorizontalAlignment="Center" TextWrapping="Wrap" Text="MultiGen 1.0" VerticalAlignment="Center" FontSize="60"/>
     </Grid>
 </Page>
